@@ -10,7 +10,8 @@ defmodule PhilomenaWeb.ImageController do
     Images,
     Images.Image,
     Comments.Comment,
-    Galleries.Gallery
+    Galleries.Gallery,
+    Sequences.Sequence
   }
 
   alias Philomena.Elasticsearch
@@ -86,12 +87,15 @@ defmodule PhilomenaWeb.ImageController do
 
     user_galleries = user_galleries(image, conn.assigns.current_user)
 
+    user_sequences = user_sequences(image, conn.assigns.current_user)
+
     assigns = [
       image: image,
       comments: comments,
       image_changeset: image_changeset,
       comment_changeset: comment_changeset,
       user_galleries: user_galleries,
+      user_sequences: user_sequences,
       description: description,
       interactions: interactions,
       watching: watching,
@@ -162,6 +166,25 @@ defmodule PhilomenaWeb.ImageController do
       )
     )
     |> select([g, e], {g, e.exists})
+    |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
+  defp user_sequences(_image, nil), do: []
+
+  defp user_sequences(image, user) do
+    Sequence
+    |> where(creator_id: ^user.id)
+    |> join(
+         :inner_lateral,
+         [s],
+         _ in fragment(
+           "SELECT EXISTS(SELECT 1 FROM sequence_interactions si WHERE si.image_id = ? AND si.sequence_id = ?)",
+           ^image.id,
+           s.id
+         )
+       )
+    |> select([s, e], {s, e.exists})
     |> order_by(desc: :updated_at)
     |> Repo.all()
   end

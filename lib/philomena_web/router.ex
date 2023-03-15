@@ -131,6 +131,7 @@ defmodule PhilomenaWeb.Router do
       resources "/posts", PostController, only: [:index]
       resources "/comments", CommentController, only: [:index]
       resources "/galleries", GalleryController, only: [:index]
+      resources "/sequences", SequenceController, only: [:index]
       resources "/filters", FilterController, only: [:index]
     end
 
@@ -314,6 +315,16 @@ defmodule PhilomenaWeb.Router do
       resources "/subscription", Gallery.SubscriptionController,
         only: [:create, :delete],
         singleton: true
+    end
+
+    resources "/sequences", SequenceController, only: [:new, :create, :edit, :update, :delete] do
+      resources "/images", Sequence.ImageController, only: [:create, :delete], singleton: true
+      resources "/order", Sequence.OrderController, only: [:update], singleton: true
+      resources "/read", Sequence.ReadController, only: [:create], singleton: true
+
+      resources "/subscription", Sequence.SubscriptionController,
+                only: [:create, :delete],
+                singleton: true
     end
 
     resources "/channels", ChannelController, only: [] do
@@ -534,6 +545,10 @@ defmodule PhilomenaWeb.Router do
 
     resources "/galleries", GalleryController, only: [:index, :show] do
       resources "/reports", Gallery.ReportController, only: [:new, :create]
+    end
+
+    resources "/sequences", SequenceController, only: [:index, :show] do
+      resources "/reports", Sequence.ReportController, only: [:new, :create]
     end
 
     resources "/adverts", AdvertController, only: [:show]

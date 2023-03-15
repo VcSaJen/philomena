@@ -2,6 +2,7 @@ defmodule Philomena.NotificationWorker do
   @modules %{
     "Comments" => Philomena.Comments,
     "Galleries" => Philomena.Galleries,
+    "Sequences" => Philomena.Sequences,
     "Images" => Philomena.Images,
     "Posts" => Philomena.Posts,
     "Topics" => Philomena.Topics

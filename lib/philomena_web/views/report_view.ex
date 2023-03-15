@@ -6,6 +6,7 @@ defmodule PhilomenaWeb.ReportView do
   alias Philomena.Commissions.Commission
   alias Philomena.Conversations.Conversation
   alias Philomena.Galleries.Gallery
+  alias Philomena.Sequences.Sequence
   alias Philomena.Posts.Post
   alias Philomena.Users.User
 
@@ -64,6 +65,9 @@ defmodule PhilomenaWeb.ReportView do
 
   def link_to_reported_thing(conn, %Gallery{} = r),
     do: link("Gallery '#{r.title}' by #{r.creator.name}", to: Routes.gallery_path(conn, :show, r))
+
+  def link_to_reported_thing(conn, %Sequence{} = r),
+      do: link("Sequence '#{r.title}' by #{r.creator.name}", to: Routes.sequence_path(conn, :show, r))
 
   def link_to_reported_thing(conn, %Post{} = r),
     do:

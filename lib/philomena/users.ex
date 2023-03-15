@@ -16,6 +16,7 @@ defmodule Philomena.Users do
   alias Philomena.Comments
   alias Philomena.Posts
   alias Philomena.Galleries
+  alias Philomena.Sequences
   alias Philomena.Reports
   alias Philomena.Filters
   alias Philomena.UserRenameWorker
@@ -624,6 +625,7 @@ defmodule Philomena.Users do
     Comments.user_name_reindex(old_name, new_name)
     Posts.user_name_reindex(old_name, new_name)
     Galleries.user_name_reindex(old_name, new_name)
+    Sequences.user_name_reindex(old_name, new_name)
     Reports.user_name_reindex(old_name, new_name)
     Filters.user_name_reindex(old_name, new_name)
   end

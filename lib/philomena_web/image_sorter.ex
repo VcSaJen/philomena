@@ -79,6 +79,32 @@ defmodule PhilomenaWeb.ImageSorter do
     end
   end
 
+  defp parse_sf(%{"sf" => <<"sequence_id:", sequence::binary>>}, sd, query) do
+    case Integer.parse(sequence) do
+      {sequence, _rest} ->
+        %{
+          query: query,
+          sorts: [
+            %{
+              "sequences.position" => %{
+                order: sd,
+                nested: %{
+                  path: :sequences,
+                  filter: %{
+                    term: %{"sequences.id" => sequence}
+                  }
+                }
+              }
+            },
+            %{"id" => "desc"}
+          ]
+        }
+
+      _ ->
+        %{query: query, sorts: []}
+    end
+  end
+
   defp parse_sf(_params, sd, query) do
     %{query: query, sorts: [%{"first_seen_at" => sd}]}
   end

@@ -12,6 +12,16 @@ defmodule Philomena.Images.Query do
     end
   end
 
+  defp sequence_id_transform(_ctx, value) do
+    case Integer.parse(value) do
+      {value, ""} when value >= 0 ->
+        {:ok, %{nested: %{path: :sequences, query: %{term: %{"sequences.id" => value}}}}}
+
+      _error ->
+        {:error, "Invalid sequence `#{value}'."}
+    end
+  end
+
   defp user_my_transform(%{user: %{id: id}}, "faves"),
     do: {:ok, %{term: %{favourited_by_user_ids: id}}}
 
@@ -76,9 +86,12 @@ defmodule Philomena.Images.Query do
         ~W(faved_by orig_sha512_hash sha512_hash uploader source_url original_format mime_type),
       bool_fields: ~W(animated processed thumbnails_generated),
       ngram_fields: ~W(description),
-      custom_fields: ~W(gallery_id),
+      custom_fields: ~W(gallery_id sequence_id),
       default_field: {"namespaced_tags.name", :term},
-      transforms: %{"gallery_id" => &gallery_id_transform/2},
+      transforms: %{
+        "gallery_id" => &gallery_id_transform/2,
+        "sequence_id" => &sequence_id_transform/2
+      },
       aliases: %{
         "faved_by" => "favourited_by_users",
         "faved_by_id" => "favourited_by_user_ids"

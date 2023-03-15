@@ -8,6 +8,7 @@ defmodule PhilomenaWeb.ProfileController do
   alias Philomena.Users.User
   alias Philomena.Bans
   alias Philomena.Galleries.Gallery
+  alias Philomena.Sequences.Sequence
   alias Philomena.Posts.Post
   alias Philomena.Comments.Comment
   alias Philomena.Interactions
@@ -147,6 +148,13 @@ defmodule PhilomenaWeb.ProfileController do
       |> limit(4)
       |> Repo.all()
 
+    recent_sequences =
+      Sequence
+      |> where(creator_id: ^user.id)
+      |> preload([:creator, thumbnail: [tags: :aliases]])
+      |> limit(4)
+      |> Repo.all()
+
     statistics = calculate_statistics(user)
 
     interactions =
@@ -172,6 +180,7 @@ defmodule PhilomenaWeb.ProfileController do
       recent_comments: recent_comments,
       recent_posts: recent_posts,
       recent_galleries: recent_galleries,
+      recent_sequences: recent_sequences,
       statistics: statistics,
       watcher_counts: watcher_counts,
       about_me: about_me,

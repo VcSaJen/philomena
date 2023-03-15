@@ -9,6 +9,8 @@ defmodule PhilomenaWeb.StatsUpdater do
   alias Philomena.Users.User
   alias Philomena.Galleries.Gallery
   alias Philomena.Galleries.Interaction
+  alias Philomena.Sequences.Sequence
+  alias Philomena.Sequences.Interaction
   alias Philomena.Commissions.Commission
   alias Philomena.Commissions.Item
   alias Philomena.Reports.Report
@@ -18,6 +20,7 @@ defmodule PhilomenaWeb.StatsUpdater do
 
   def update_stats! do
     {gallery_count, gallery_size, distinct_creators, images_in_galleries} = galleries()
+    {sequence_count, sequence_size, distinct_creators, images_in_sequences} = sequences()
     {open_reports, report_count, response_time} = moderation()
     {open_commissions, commission_items} = commissions()
     {image_aggs, comment_aggs} = aggregations()
@@ -42,8 +45,11 @@ defmodule PhilomenaWeb.StatsUpdater do
         response_time: response_time,
         gallery_count: gallery_count,
         gallery_size: gallery_size,
+        sequence_count: sequence_count,
+        sequence_size: sequence_size,
         distinct_creators: distinct_creators,
-        images_in_galleries: images_in_galleries
+        images_in_galleries: images_in_galleries,
+        images_in_sequences: images_in_sequences
       )
 
     now = DateTime.utc_now() |> DateTime.truncate(:second)
@@ -116,6 +122,26 @@ defmodule PhilomenaWeb.StatsUpdater do
     last_gi = Repo.one(last(Interaction))
 
     {gallery_count, gallery_size, distinct_creators, diff(last_gi, first_gi)}
+  end
+
+  defp sequences do
+    sequence_count = Repo.aggregate(Sequence, :count, :id)
+
+    sequence_size =
+      Repo.aggregate(Sequence, :avg, :image_count)
+      |> Kernel.||(Decimal.new(0))
+      |> Decimal.to_float()
+      |> trunc()
+
+    distinct_creators =
+      Sequence
+      |> distinct(:creator_id)
+      |> Repo.aggregate(:count, :id)
+
+    first_si = Repo.one(first(Interaction))
+    last_si = Repo.one(last(Interaction))
+
+    {sequence_count, sequence_size, distinct_creators, diff(last_si, first_si)}
   end
 
   defp commissions do

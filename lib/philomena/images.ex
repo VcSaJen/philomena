@@ -34,6 +34,8 @@ defmodule Philomena.Images do
   alias Philomena.Comments
   alias Philomena.Galleries.Gallery
   alias Philomena.Galleries.Interaction
+  alias Philomena.Sequences.Sequence
+  alias Philomena.Sequences.Interaction
   alias Philomena.Users.User
 
   @doc """
@@ -549,11 +551,20 @@ defmodule Philomena.Images do
 
     gallery_interactions = where(Interaction, image_id: ^image.id)
 
+    sequences =
+      Sequence
+      |> join(:inner, [s], si in assoc(s, :interactions), on: si.image_id == ^image.id)
+      |> update(inc: [image_count: -1])
+
+    sequence_interactions = where(Interaction, image_id: ^image.id)
+
     multi
     |> Multi.update(:image, changeset)
     |> Multi.update_all(:reports, reports, [])
     |> Multi.update_all(:galleries, galleries, [])
+    |> Multi.update_all(:sequences, sequences, [])
     |> Multi.delete_all(:gallery_interactions, gallery_interactions, [])
+    |> Multi.delete_all(:sequence_interactions, sequence_interactions, [])
     |> Multi.run(:tags, fn repo, %{image: image} ->
       image = Repo.preload(image, :tags, force: true)
 
@@ -787,6 +798,7 @@ defmodule Philomena.Images do
       :hiders,
       :deleter,
       :gallery_interactions,
+      :sequence_interactions,
       tags: [:aliases, :aliased_tag]
     ]
   end

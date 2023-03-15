@@ -37,5 +37,7 @@
 
   a.header__link href="/galleries"
     | Galleries
+  a.header__link href="/sequences"
+    | Sequences
   a.header__link href="/commissions"
     | Commissions

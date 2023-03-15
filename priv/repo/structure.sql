@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 14.1
--- Dumped by pg_dump version 14.1
+-- Dumped from database version 15.2
+-- Dumped by pg_dump version 15.2
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1372,6 +1372,86 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: sequence_interactions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sequence_interactions (
+    id integer NOT NULL,
+    "position" integer NOT NULL,
+    image_id integer NOT NULL,
+    sequence_id integer NOT NULL
+);
+
+
+--
+-- Name: sequence_interactions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.sequence_interactions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: sequence_interactions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.sequence_interactions_id_seq OWNED BY public.sequence_interactions.id;
+
+
+--
+-- Name: sequence_subscriptions; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sequence_subscriptions (
+    sequence_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: sequences; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.sequences (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    spoiler_warning character varying DEFAULT ''::character varying NOT NULL,
+    description character varying DEFAULT ''::character varying NOT NULL,
+    thumbnail_id integer NOT NULL,
+    creator_id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    watcher_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
+    watcher_count integer DEFAULT 0 NOT NULL,
+    image_count integer DEFAULT 0 NOT NULL,
+    order_position_asc boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: sequences_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.sequences_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: sequences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.sequences_id_seq OWNED BY public.sequences.id;
+
+
+--
 -- Name: site_notices; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -2350,6 +2430,20 @@ ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_
 
 
 --
+-- Name: sequence_interactions id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequence_interactions ALTER COLUMN id SET DEFAULT nextval('public.sequence_interactions_id_seq'::regclass);
+
+
+--
+-- Name: sequences id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequences ALTER COLUMN id SET DEFAULT nextval('public.sequences_id_seq'::regclass);
+
+
+--
 -- Name: site_notices id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -2729,6 +2823,22 @@ ALTER TABLE ONLY public.roles
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: sequence_interactions sequence_interactions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequence_interactions
+    ADD CONSTRAINT sequence_interactions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: sequences sequences_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequences
+    ADD CONSTRAINT sequences_pkey PRIMARY KEY (id);
 
 
 --
@@ -3636,6 +3746,69 @@ CREATE INDEX index_reports_on_user_id ON public.reports USING btree (user_id);
 --
 
 CREATE INDEX index_roles_on_name_and_resource_type_and_resource_id ON public.roles USING btree (name, resource_type, resource_id);
+
+
+--
+-- Name: index_sequence_interactions_on_image_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequence_interactions_on_image_id ON public.sequence_interactions USING btree (image_id);
+
+
+--
+-- Name: index_sequence_interactions_on_position; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequence_interactions_on_position ON public.sequence_interactions USING btree ("position");
+
+
+--
+-- Name: index_sequence_interactions_on_sequence_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequence_interactions_on_sequence_id ON public.sequence_interactions USING btree (sequence_id);
+
+
+--
+-- Name: index_sequence_interactions_on_sequence_id_and_image_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_sequence_interactions_on_sequence_id_and_image_id ON public.sequence_interactions USING btree (sequence_id, image_id);
+
+
+--
+-- Name: index_sequence_interactions_on_sequence_id_and_position; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequence_interactions_on_sequence_id_and_position ON public.sequence_interactions USING btree (sequence_id, "position");
+
+
+--
+-- Name: index_sequence_subscriptions_on_sequence_id_and_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX index_sequence_subscriptions_on_sequence_id_and_user_id ON public.sequence_subscriptions USING btree (sequence_id, user_id);
+
+
+--
+-- Name: index_sequence_subscriptions_on_user_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequence_subscriptions_on_user_id ON public.sequence_subscriptions USING btree (user_id);
+
+
+--
+-- Name: index_sequences_on_creator_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequences_on_creator_id ON public.sequences USING btree (creator_id);
+
+
+--
+-- Name: index_sequences_on_thumbnail_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_sequences_on_thumbnail_id ON public.sequences USING btree (thumbnail_id);
 
 
 --
@@ -4953,6 +5126,54 @@ ALTER TABLE ONLY public.moderation_logs
 
 
 --
+-- Name: sequence_interactions sequence_interactions_image_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequence_interactions
+    ADD CONSTRAINT sequence_interactions_image_id_fkey FOREIGN KEY (image_id) REFERENCES public.images(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
+-- Name: sequence_interactions sequence_interactions_sequence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequence_interactions
+    ADD CONSTRAINT sequence_interactions_sequence_id_fkey FOREIGN KEY (sequence_id) REFERENCES public.sequences(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: sequence_subscriptions sequence_subscriptions_sequence_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequence_subscriptions
+    ADD CONSTRAINT sequence_subscriptions_sequence_id_fkey FOREIGN KEY (sequence_id) REFERENCES public.sequences(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: sequence_subscriptions sequence_subscriptions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequence_subscriptions
+    ADD CONSTRAINT sequence_subscriptions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: sequences sequences_creator_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequences
+    ADD CONSTRAINT sequences_creator_id_fkey FOREIGN KEY (creator_id) REFERENCES public.users(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: sequences sequences_thumbnail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.sequences
+    ADD CONSTRAINT sequences_thumbnail_id_fkey FOREIGN KEY (thumbnail_id) REFERENCES public.images(id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+
+--
 -- Name: user_tokens user_tokens_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -4991,3 +5212,4 @@ INSERT INTO public."schema_migrations" (version) VALUES (20210929181319);
 INSERT INTO public."schema_migrations" (version) VALUES (20211107130226);
 INSERT INTO public."schema_migrations" (version) VALUES (20211219194836);
 INSERT INTO public."schema_migrations" (version) VALUES (20220321173359);
+INSERT INTO public."schema_migrations" (version) VALUES (20230312051802);

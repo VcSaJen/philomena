@@ -16,6 +16,7 @@ alias Philomena.{
   Filters.Filter,
   Forums.Forum,
   Galleries.Gallery,
+  Sequences.Sequence,
   Posts.Post,
   Images.Image,
   Reports.Report,
@@ -34,7 +35,7 @@ import Ecto.Query
 
 IO.puts("---- Creating Elasticsearch indices")
 
-for model <- [Image, Comment, Gallery, Tag, Post, Report, Filter] do
+for model <- [Image, Comment, Gallery, Sequence, Tag, Post, Report, Filter] do
   Elasticsearch.delete_index!(model)
   Elasticsearch.create_index!(model)
 end

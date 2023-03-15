@@ -16,7 +16,7 @@ elixir:
     ' This net total excludes the
     => number_with_delimiter(img_bucket["deleted"]["doc_count"])
     ' images that have been deleted or marked as duplicates.
-  
+
   h3 Comments
   p
     ' There are
@@ -35,7 +35,7 @@ elixir:
     span.stat>
       = number_with_delimiter(trunc(img_bucket["non_deleted"]["avg_comments"]["value"] || 0))
     ' comments on each image on the site.
-  
+
   h3 Votes
   p
     ' Out of
@@ -89,6 +89,24 @@ elixir:
     ' In total, images have been added to galleries
     span.stat>
       = number_with_delimiter(@images_in_galleries)
+    ' times.
+
+  h3 Sequences
+  p
+    ' There are
+    span.stat>
+      = number_with_delimiter(@sequence_count)
+    ' existing image sequences on the site, created by
+    span.stat>
+      = number_with_delimiter(@distinct_creators)
+    ' distinct creators. There are, on average,
+    span.stat>
+      = number_with_delimiter(@sequence_size)
+    ' images in each sequence.
+  p
+    ' In total, images have been added to sequences
+    span.stat>
+      = number_with_delimiter(@images_in_sequences)
     ' times.
 
   h3 Commissions

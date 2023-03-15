@@ -1,0 +1,41 @@
+.dropdown.block__header__dropdown-tab
+  a href="#"
+    i.fa.fa-images>
+    span.hide-limited-desktop.hide-mobile Sequences
+    span data-click-preventdefault="true"
+      i.fa.fa-caret-down>
+  .dropdown__content.dropdown__content-right
+    .block
+      .block__content.add-to-sequence-list
+        .block__list
+          a.block__list__link.primary href=Routes.sequence_path(@conn, :index, sequence: [include_image: @image.id])
+            i.fa.fa-table>
+            span.hide-mobile Featured in
+
+        = if Enum.any?(@user_sequences) do
+          ul.block__list.js-sequence-list
+            = for {sequence, present} <- @user_sequences do
+              = if present do
+                / Options to remove
+                li id="sequence_#{sequence.id}"
+                  a.block__list__link.js-sequence-add.hidden data-fetchcomplete-hide="#sequence_#{sequence.id} .js-sequence-add" data-fetchcomplete-show="#sequence_#{sequence.id} .js-sequence-remove" data-method="post" data-remote="true" href=Routes.sequence_image_path(@conn, :create, sequence, image_id: @image.id)
+                    = sequence.title
+                  a.block__list__link.active.js-sequence-remove data-fetchcomplete-hide="#sequence_#{sequence.id} .js-sequence-remove" data-fetchcomplete-show="#sequence_#{sequence.id} .js-sequence-add" data-method="delete" data-remote="true" href=Routes.sequence_image_path(@conn, :delete, sequence, image_id: @image.id)
+                    = sequence.title
+              - else
+                / Options to add
+                li id="sequence_#{sequence.id}"
+                  a.block__list__link.js-sequence-add data-fetchcomplete-hide="#sequence_#{sequence.id} .js-sequence-add" data-fetchcomplete-show="#sequence_#{sequence.id} .js-sequence-remove" data-method="post" data-remote="true" href=Routes.sequence_image_path(@conn, :create, sequence, image_id: @image.id)
+                    = sequence.title
+                  a.block__list__link.active.js-sequence-remove.hidden data-fetchcomplete-hide="#sequence_#{sequence.id} .js-sequence-remove" data-fetchcomplete-show="#sequence_#{sequence.id} .js-sequence-add" data-method="delete" data-remote="true" href=Routes.sequence_image_path(@conn, :delete, sequence, image_id: @image.id)
+                    = sequence.title
+
+        .block__list
+          = if @conn.assigns.current_user do
+            a.block__list__link.primary href=Routes.sequence_path(@conn, :new, with_image: @image.id)
+              i.fa.fa-plus>
+              span.hide-limited-desktop.hide-mobile Create a sequence
+          - else
+            a.block__list__link.primary href=Routes.session_path(@conn, :new)
+              i.fa.fa-user-plus>
+              span.hide-limited-desktop.hide-mobile Sign in to create a sequence

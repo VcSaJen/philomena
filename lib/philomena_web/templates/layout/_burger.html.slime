@@ -20,6 +20,9 @@ nav#burger
   a href="/galleries"
     i.fa.fa-fw.fa-image<>
     ' Galleries
+  a href="/sequences"
+    i.fa.fa-fw.fa-image<>
+    ' Sequences
   a href="/comments"
     i.fa.fa-fw.fa-comments<>
     ' Comments

@@ -6,6 +6,7 @@ defmodule Mix.Tasks.ReindexAll do
   alias Philomena.{
     Comments.Comment,
     Galleries.Gallery,
+    Sequences.Sequence,
     Posts.Post,
     Images.Image,
     Reports.Report,
@@ -13,7 +14,7 @@ defmodule Mix.Tasks.ReindexAll do
     Filters.Filter
   }
 
-  alias Philomena.{Comments, Galleries, Posts, Images, Tags, Filters}
+  alias Philomena.{Comments, Galleries, Sequences, Posts, Images, Tags, Filters}
   alias Philomena.Polymorphic
   alias Philomena.Repo
   import Ecto.Query
@@ -22,6 +23,7 @@ defmodule Mix.Tasks.ReindexAll do
     {Images, Image},
     {Comments, Comment},
     {Galleries, Gallery},
+    {Sequences, Sequence},
     {Tags, Tag},
     {Posts, Post},
     {Filters, Filter}

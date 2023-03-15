@@ -5,6 +5,7 @@ defmodule PhilomenaWeb.NotificationView do
     "Channel" => "_channel.html",
     "Forum" => "_forum.html",
     "Gallery" => "_gallery.html",
+    "Sequence" => "_sequence.html",
     "Image" => "_image.html",
     "LivestreamChannel" => "_channel.html",
     "Topic" => "_topic.html"

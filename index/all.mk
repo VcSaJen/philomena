@@ -1,10 +1,13 @@
-all: comments galleries images posts reports tags filters
+all: comments galleries sequences images posts reports tags filters
 
 comments:
 	$(MAKE) -f comments.mk
 
 galleries:
 	$(MAKE) -f galleries.mk
+
+sequences:
+	$(MAKE) -f sequences.mk
 
 images:
 	$(MAKE) -f images.mk

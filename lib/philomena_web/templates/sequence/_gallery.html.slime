@@ -1,0 +1,11 @@
+- link = Routes.sequence_path(@conn, :show, @sequence)
+
+.media-box
+  a.media-box__header.media-box__header--link href=link title=@sequence.title
+    = @sequence.title
+
+    .media-box__overlay
+      = @sequence.spoiler_warning
+
+  .media-box__content.media-box__content--large
+    = render PhilomenaWeb.ImageView, "_image_container.html", image: @sequence.thumbnail, size: :thumb, conn: @conn, link: link

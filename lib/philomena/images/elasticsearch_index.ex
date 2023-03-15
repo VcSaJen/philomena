@@ -80,6 +80,15 @@ defmodule Philomena.Images.ElasticsearchIndex do
           },
           gallery_id: %{type: "keyword"},
           gallery_position: %{type: "object", enabled: false},
+          sequences: %{
+            type: "nested",
+            properties: %{
+              id: %{type: "integer"},
+              position: %{type: "integer"}
+            }
+          },
+          sequence_id: %{type: "keyword"},
+          sequence_position: %{type: "object", enabled: false},
           namespaced_tags: %{
             properties: %{
               name: %{type: "keyword"},
@@ -141,11 +150,15 @@ defmodule Philomena.Images.ElasticsearchIndex do
       duplicate_id: image.duplicate_id,
       galleries:
         image.gallery_interactions |> Enum.map(&%{id: &1.gallery_id, position: &1.position}),
+      sequences:
+        image.sequence_interactions |> Enum.map(&%{id: &1.sequence_id, position: &1.position}),
       namespaced_tags: %{
         name: image.tags |> Enum.flat_map(&([&1] ++ &1.aliases)) |> Enum.map(& &1.name)
       },
       gallery_id: Enum.map(image.gallery_interactions, & &1.gallery_id),
       gallery_position: Map.new(image.gallery_interactions, &{&1.gallery_id, &1.position}),
+      sequence_id: Enum.map(image.sequence_interactions, & &1.sequence_id),
+      sequence_position: Map.new(image.sequence_interactions, &{&1.sequence_id, &1.position}),
       favourited_by_users: image.favers |> Enum.map(&String.downcase(&1.name)),
       hidden_by_users: image.hiders |> Enum.map(&String.downcase(&1.name)),
       upvoters: image.upvoters |> Enum.map(&String.downcase(&1.name)),

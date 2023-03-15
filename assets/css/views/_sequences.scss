@@ -1,0 +1,44 @@
+.input--search-sequence-list {
+  border: $border;
+  width: 250px;
+  padding: 0 4px;
+  line-height: 28px;
+  font-family: $font_family_base;
+}
+
+.input--search-sequence-list, .add-to-sequence-list ul a.block__list__link {
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+}
+
+.add-to-sequence-list {
+  ::-webkit-scrollbar-track
+  {
+    -webkit-box-shadow: inset 0 0 6px #ccc;
+    background-color: $background_color;
+  }
+
+  ::-webkit-scrollbar
+  {
+    width: 6px;
+    background-color: $background_color;
+  }
+
+  ::-webkit-scrollbar-thumb
+  {
+    background-color: $primary_color;
+  }
+
+  ul {
+    max-height: 132px;
+    overflow-y: auto;
+    overflow-x: hidden; /* Scrollbar customization is only available in WebKit; Gecko and IE have wider bars that cause horizontal overflow */
+  }
+}
+
+/* Limit the width of ul items inside sequence list (.add-to-sequence-list includes .block__list__link elements
+ * that are not part of the list, hence nested selector) */
+.add-to-sequence-list li a.block__list__link {
+  width: 244px; /* input--search-sequence-list width - 6px scrollbar */
+}

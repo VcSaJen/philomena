@@ -7,7 +7,7 @@ all: import_es
 import_es: dump_jsonl
 	$(ELASTICDUMP) --input=images.jsonl --output=http://localhost:9200/ --output-index=images --limit 10000 --retryAttempts=5 --type=data --transform="doc._source = Object.assign({},doc)"
 
-dump_jsonl: metadata true_uploaders uploaders deleters galleries tags hides upvotes downvotes faves tag_names
+dump_jsonl: metadata true_uploaders uploaders deleters galleries sequences tags hides upvotes downvotes faves tag_names
 	psql $(DATABASE) -v ON_ERROR_STOP=1 <<< 'copy (select temp_images.jsonb_object_agg(object) from temp_images.image_search_json group by image_id) to stdout;' > images.jsonl
 	psql $(DATABASE) -v ON_ERROR_STOP=1 <<< 'drop schema temp_images cascade;'
 	sed -i images.jsonl -e 's/\\\\/\\/g'
@@ -66,6 +66,13 @@ galleries: image_search_json
 		insert into temp_images.image_search_json (image_id, object) select gi.image_id, jsonb_build_object('gallery_interactions', jsonb_agg(jsonb_build_object('id', gi.gallery_id, 'position', gi.position))) from gallery_interactions gi group by image_id;
 		insert into temp_images.image_search_json (image_id, object) select gi.image_id, jsonb_build_object('gallery_id', jsonb_agg(gi.gallery_id)) from gallery_interactions gi group by image_id;
 		insert into temp_images.image_search_json (image_id, object) select gi.image_id, jsonb_build_object('gallery_position', jsonb_object_agg(gi.gallery_id, gi.position)) from gallery_interactions gi group by image_id;
+	SQL
+
+sequences: image_search_json
+	psql $(DATABASE) -v ON_ERROR_STOP=1 <<-SQL
+		insert into temp_images.image_search_json (image_id, object) select gi.image_id, jsonb_build_object('sequence_interactions', jsonb_agg(jsonb_build_object('id', gi.sequence_id, 'position', gi.position))) from sequence_interactions gi group by image_id;
+		insert into temp_images.image_search_json (image_id, object) select gi.image_id, jsonb_build_object('sequence_id', jsonb_agg(gi.sequence_id)) from sequence_interactions gi group by image_id;
+		insert into temp_images.image_search_json (image_id, object) select gi.image_id, jsonb_build_object('sequence_position', jsonb_object_agg(gi.sequence_id, gi.position)) from sequence_interactions gi group by image_id;
 	SQL
 
 tags: image_search_json

@@ -16,6 +16,7 @@ import { setupComments }        from './comment';
 import { setupDupeReports }     from './duplicate_reports';
 import { setFingerprintCookie } from './fingerprint';
 import { setupGalleryEditing }  from './galleries';
+import { setupSequenceEditing } from './sequences';
 import { initImagesClientside } from './imagesclientside';
 import { bindImageTarget }      from './image_expansion';
 import { setupEvents }          from './misc';
@@ -50,6 +51,7 @@ whenReady(() => {
   setupDupeReports();
   setFingerprintCookie();
   setupGalleryEditing();
+  setupSequenceEditing();
   bindImageTarget();
   setupEvents();
   setupNotifications();

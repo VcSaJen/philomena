@@ -13,6 +13,7 @@ defmodule Philomena.Users.User do
   alias Philomena.Badges
   alias Philomena.Notifications.UnreadNotification
   alias Philomena.Galleries.Gallery
+  alias Philomena.Sequences.Sequence
   alias Philomena.Users.User
   alias Philomena.Commissions.Commission
   alias Philomena.Roles.Role
@@ -28,6 +29,7 @@ defmodule Philomena.Users.User do
     has_many :verified_links, ArtistLink, where: [aasm_state: "verified"]
     has_many :public_links, ArtistLink, where: [public: true, aasm_state: "verified"]
     has_many :galleries, Gallery, foreign_key: :creator_id
+    has_many :sequences, Sequence, foreign_key: :creator_id
     has_many :awards, Badges.Award
     has_many :unread_notifications, UnreadNotification
     has_many :notifications, through: [:unread_notifications, :notification]

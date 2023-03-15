@@ -2,6 +2,7 @@ defmodule Philomena.IndexWorker do
   @modules %{
     "Comments" => Philomena.Comments,
     "Galleries" => Philomena.Galleries,
+    "Sequences" => Philomena.Sequences,
     "Images" => Philomena.Images,
     "Posts" => Philomena.Posts,
     "Reports" => Philomena.Reports,

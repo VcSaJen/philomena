@@ -16,6 +16,7 @@ defimpl Canada.Can, for: [Atom, Philomena.Users.User] do
   alias Philomena.Posts.Post
   alias Philomena.Filters.Filter
   alias Philomena.Galleries.Gallery
+  alias Philomena.Sequences.Sequence
   alias Philomena.DnpEntries.DnpEntry
   alias Philomena.ArtistLinks.ArtistLink
   alias Philomena.Tags.Tag
@@ -136,6 +137,9 @@ defimpl Canada.Can, for: [Atom, Philomena.Users.User] do
 
   # Manage galleries
   def can?(%User{role: "moderator"}, _action, %Gallery{}), do: true
+
+  # Manage sequences
+  def can?(%User{role: "moderator"}, _action, %Sequence{}), do: true
 
   # See moderation logs
   def can?(%User{role: "moderator"}, _action, ModerationLog), do: true
@@ -443,6 +447,14 @@ defimpl Canada.Can, for: [Atom, Philomena.Users.User] do
   def can?(%User{}, action, Gallery) when action in [:new, :create], do: true
 
   def can?(%User{id: id}, action, %Gallery{creator_id: id})
+      when action in [:edit, :update, :delete],
+      do: true
+
+  # Create and edit sequences
+  def can?(_user, :show, %Sequence{}), do: true
+  def can?(%User{}, action, Sequence) when action in [:new, :create], do: true
+
+  def can?(%User{id: id}, action, %Sequence{creator_id: id})
       when action in [:edit, :update, :delete],
       do: true
 

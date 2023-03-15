@@ -12,6 +12,7 @@ defmodule Philomena.Images.Image do
   alias Philomena.Users.User
   alias Philomena.Tags.Tag
   alias Philomena.Galleries
+  alias Philomena.Sequences
   alias Philomena.Comments.Comment
   alias Philomena.SourceChanges.SourceChange
   alias Philomena.TagChanges.TagChange
@@ -31,6 +32,7 @@ defmodule Philomena.Images.Image do
     has_many :faves, ImageFave
     has_many :hides, ImageHide
     has_many :gallery_interactions, Galleries.Interaction
+    has_many :sequence_interactions, Sequences.Interaction
     has_many :subscriptions, Subscription
     has_many :source_changes, SourceChange, on_replace: :delete
     has_many :tag_changes, TagChange
@@ -42,6 +44,7 @@ defmodule Philomena.Images.Image do
     many_to_many :locked_tags, Tag, join_through: "image_tag_locks", on_replace: :delete
     has_one :intensity, ImageIntensity
     has_many :galleries, through: [:gallery_interactions, :image]
+    has_many :sequences, through: [:sequence_interactions, :image]
 
     field :image, :string
     field :image_name, :string

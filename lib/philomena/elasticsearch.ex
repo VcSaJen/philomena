@@ -7,6 +7,7 @@ defmodule Philomena.Elasticsearch do
 
   alias Philomena.Comments.Comment
   alias Philomena.Galleries.Gallery
+  alias Philomena.Sequences.Sequence
   alias Philomena.Images.Image
   alias Philomena.Posts.Post
   alias Philomena.Reports.Report
@@ -15,6 +16,7 @@ defmodule Philomena.Elasticsearch do
 
   alias Philomena.Comments.ElasticsearchIndex, as: CommentIndex
   alias Philomena.Galleries.ElasticsearchIndex, as: GalleryIndex
+  alias Philomena.Sequences.ElasticsearchIndex, as: SequenceIndex
   alias Philomena.Images.ElasticsearchIndex, as: ImageIndex
   alias Philomena.Posts.ElasticsearchIndex, as: PostIndex
   alias Philomena.Reports.ElasticsearchIndex, as: ReportIndex
@@ -23,6 +25,7 @@ defmodule Philomena.Elasticsearch do
 
   defp index_for(Comment), do: CommentIndex
   defp index_for(Gallery), do: GalleryIndex
+  defp index_for(Sequence), do: SequenceIndex
   defp index_for(Image), do: ImageIndex
   defp index_for(Post), do: PostIndex
   defp index_for(Report), do: ReportIndex

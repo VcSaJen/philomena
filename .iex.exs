@@ -2,6 +2,7 @@ alias Philomena.{
   Repo,
   Comments.Comment,
   Galleries.Gallery,
+  Sequences.Sequence,
   Posts.Post,
   Images.Image,
   Topics.Topic,

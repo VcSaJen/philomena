@@ -1,0 +1,9 @@
+= if Enum.any?(@sequences) do
+  .block
+    .block__header
+      span.block__header__title Recent Sequences
+      = link "View all", to: Routes.sequence_path(@conn, :index, sequence: [creator: @user.name])
+
+    .block__content.js-resizable-media-container
+      = for sequence <- @sequences do
+        = render PhilomenaWeb.SequenceView, "_sequence.html", sequence: sequence, conn: @conn

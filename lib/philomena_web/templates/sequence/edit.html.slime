@@ -1,0 +1,3 @@
+h1 Editing Sequence
+
+= render PhilomenaWeb.SequenceView, "_form.html", conn: @conn, changeset: @changeset, action: Routes.sequence_path(@conn, :update, @sequence)
