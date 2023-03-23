@@ -17,8 +17,10 @@ defmodule PhilomenaWeb.ImageController do
   alias Philomena.Elasticsearch
   alias Philomena.Interactions
   alias Philomena.Comments
+  alias Philomena.Sequences
   alias Philomena.Repo
   import Ecto.Query
+  require Logger
 
   plug PhilomenaWeb.LimitPlug,
        [time: 5, error: "You may only upload images once every 5 seconds."]
@@ -89,6 +91,8 @@ defmodule PhilomenaWeb.ImageController do
 
     user_sequences = user_sequences(image, conn.assigns.current_user)
 
+    image_sequences = image_sequences(image)
+
     assigns = [
       image: image,
       comments: comments,
@@ -96,6 +100,7 @@ defmodule PhilomenaWeb.ImageController do
       comment_changeset: comment_changeset,
       user_galleries: user_galleries,
       user_sequences: user_sequences,
+      image_sequences: image_sequences,
       description: description,
       interactions: interactions,
       watching: watching,
@@ -186,6 +191,54 @@ defmodule PhilomenaWeb.ImageController do
        )
     |> select([s, e], {s, e.exists})
     |> order_by(desc: :updated_at)
+    |> Repo.all()
+  end
+
+  defp image_sequences(image) do
+    Sequences.Interaction
+    |> where(image_id: ^image.id)
+    |> join(
+      :inner,
+      [si],
+      s in assoc(si, :sequence)
+    )
+    |> join(
+      :left_lateral,
+      [si, _],
+      _ in fragment(
+        "(SELECT sin.image_id FROM sequence_interactions sin WHERE sin.sequence_id = ? AND sin.\"position\" > ? ORDER BY sin.\"position\" ASC LIMIT 1)",
+        si.sequence_id,
+        si.position
+      )
+    )
+    |> join(
+      :left_lateral,
+      [si, _, _],
+      _ in fragment(
+        "(SELECT sip.image_id FROM sequence_interactions sip WHERE sip.sequence_id = ? AND sip.\"position\" < ? ORDER BY sip.\"position\" DESC LIMIT 1)",
+        si.sequence_id,
+        si.position
+      )
+    )
+    |> join(
+      :left_lateral,
+      [si, _, _, _],
+      _ in fragment(
+        "(SELECT sif.image_id FROM sequence_interactions sif WHERE sif.sequence_id = ? AND sif.\"position\" < ? ORDER BY sif.\"position\" ASC LIMIT 1)",
+        si.sequence_id,
+        si.position
+      )
+    )
+    |> join(
+      :left_lateral,
+      [si, _, _, _, _],
+      _ in fragment(
+        "(SELECT sil.image_id FROM sequence_interactions sil WHERE sil.sequence_id = ? AND sil.\"position\" > ? ORDER BY sil.\"position\" DESC LIMIT 1)",
+        si.sequence_id,
+        si.position
+      )
+    )
+    |> select([si, s, sin, sip, sif, sil], %{sequence: s, next_image: sin.image_id, prev_image: sip.image_id, first_image: sif.image_id, last_image: sil.image_id})
     |> Repo.all()
   end
 

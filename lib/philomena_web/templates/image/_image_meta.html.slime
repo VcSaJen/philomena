@@ -81,3 +81,4 @@
         - else
           => size_mb
           | MB
+= render PhilomenaWeb.ImageView, "_image_sequences.html", image: @image, image_sequences: @image_sequences, conn: @conn

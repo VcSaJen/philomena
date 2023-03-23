@@ -1,0 +1,40 @@
+= if Enum.any?(@image_sequences) do
+  div id="sequences"
+    = for sequence_info <- @image_sequences do
+      / List sequences
+      div.block.block__header.flex
+        = if !is_nil(sequence_info.first_image) do
+          a> href=Routes.image_path(@conn, :show, sequence_info.first_image)
+            i.fa.fa-angles-left>
+            | First
+        - else
+          span.block__header__item.block__header--disabled-link
+            i.fa.fa-angles-left>
+            | First
+        = if !is_nil(sequence_info.prev_image) do
+          a> href=Routes.image_path(@conn, :show, sequence_info.prev_image)
+            i.fa.fa-angle-left>
+            | Prev
+        - else
+          span.block__header__item.block__header--disabled-link
+            i.fa.fa-angle-left>
+            | Prev
+        span.block__header--sequence-title-wrapper.flex
+          a.block__header--sequence-title> href=Routes.sequence_path(@conn, :show, sequence_info.sequence)
+            = sequence_info.sequence.title
+        = if !is_nil(sequence_info.next_image) do
+          a> href=Routes.image_path(@conn, :show, sequence_info.next_image)
+            | Next
+            i.fa.fa-angle-right<
+        - else
+          span.block__header__item.block__header--disabled-link
+            | Next
+            i.fa.fa-angle-right<
+        = if !is_nil(sequence_info.last_image) do
+          a href=Routes.image_path(@conn, :show, sequence_info.last_image)
+            | Last
+            i.fa.fa-angles-right<
+        - else
+          span.block__header__item.block__header--disabled-link
+            | Last
+            i.fa.fa-angles-right<
