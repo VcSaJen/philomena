@@ -20,7 +20,6 @@ defmodule PhilomenaWeb.ImageController do
   alias Philomena.Sequences
   alias Philomena.Repo
   import Ecto.Query
-  require Logger
 
   plug PhilomenaWeb.LimitPlug,
        [time: 5, error: "You may only upload images once every 5 seconds."]

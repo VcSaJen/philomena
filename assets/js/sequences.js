@@ -8,7 +8,7 @@ import { initDraggables } from './utils/draggable';
 import { fetchJson } from './utils/requests';
 
 export function setupSequenceEditing() {
-  if (!$('.rearrange-button')) return;
+  if (!$('.rearrange-button') || !window.booru.sequenceImages) return;
 
   const [ rearrangeEl, saveEl ] = $$('.rearrange-button');
   const sortableEl = $('#sortable');

@@ -8,7 +8,7 @@ import { initDraggables } from './utils/draggable';
 import { fetchJson } from './utils/requests';
 
 export function setupGalleryEditing() {
-  if (!$('.rearrange-button')) return;
+  if (!$('.rearrange-button') || !window.booru.galleryImages) return;
 
   const [ rearrangeEl, saveEl ] = $$('.rearrange-button');
   const sortableEl = $('#sortable');
